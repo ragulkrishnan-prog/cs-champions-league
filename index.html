@@ -355,7 +355,7 @@ footer.foot{
    guide provided alongside this file). Everything else works unchanged
    once this object is filled in. */
 const firebaseConfig = {
-  apiKey: "AIzaSyD1lmBxVMZoqFArpUy5UXMh0q7k4vC5gM0",
+ apiKey: "AIzaSyD1lmBxVMZoqFArpUy5UXMh0q7k4vC5gM0",
   authDomain: "cs-champions-league.firebaseapp.com",
   databaseURL: "https://cs-champions-league-default-rtdb.firebaseio.com",
   projectId: "cs-champions-league",
@@ -801,8 +801,8 @@ function renderAdmin(){
     <div class="admin-gate">
       <div class="lock">🔒</div>
       <h2>Admin Access</h2>
-      <p>Enter the PIN to update live scores, schedule and rosters.</p>
-      <input class="pin" id="pinInput" maxlength="8" placeholder="• • • •" inputmode="numeric">
+      <p>Enter the admin password to update live scores, schedule and rosters.</p>
+      <input class="pin" id="pinInput" type="password" maxlength="60" placeholder="Admin password" autocomplete="off">
       <button class="primary" id="pinSubmit">Unlock</button>
       <div class="admin-err" id="pinErr"></div>
     </div>`;
@@ -1009,7 +1009,7 @@ function bindEvents(){
     const doUnlock = ()=>{
       const val = document.getElementById('pinInput').value;
       if(val === ADMIN_PIN){ adminUnlocked = true; render(); }
-      else { document.getElementById('pinErr').textContent = 'Incorrect PIN'; }
+      else { document.getElementById('pinErr').textContent = 'Incorrect password'; }
     };
     pinSubmit.addEventListener('click', doUnlock);
     document.getElementById('pinInput').addEventListener('keydown', e=>{ if(e.key==='Enter') doUnlock(); });
