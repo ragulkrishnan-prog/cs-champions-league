@@ -355,7 +355,7 @@ footer.foot{
    guide provided alongside this file). Everything else works unchanged
    once this object is filled in. */
 const firebaseConfig = {
- apiKey: "AIzaSyD1lmBxVMZoqFArpUy5UXMh0q7k4vC5gM0",
+   apiKey: "AIzaSyD1lmBxVMZoqFArpUy5UXMh0q7k4vC5gM0",
   authDomain: "cs-champions-league.firebaseapp.com",
   databaseURL: "https://cs-champions-league-default-rtdb.firebaseio.com",
   projectId: "cs-champions-league",
@@ -512,12 +512,23 @@ function seedData(){
   };
 }
 
+/* Firebase Realtime Database silently deletes any empty array ([]) when
+   saving, so fields like an empty players list or goals list vanish and
+   come back as `undefined`. This repairs that after every load/sync so the
+   rest of the app can safely assume these arrays always exist. */
+function normalizeData(d){
+  if(!d) return d;
+  (d.teams||[]).forEach(t=>{ if(!t.players) t.players = []; });
+  (d.matches||[]).forEach(m=>{ if(!m.goals) m.goals = []; });
+  return d;
+}
+
 async function loadData(){
   try{
     const snap = await dbRef.once('value');
     const val = snap.val();
     if(val){
-      DATA = val;
+      DATA = normalizeData(val);
     } else {
       DATA = seedData();
       await dbRef.set(DATA);
@@ -1165,7 +1176,7 @@ function startLiveSync(){
     if(adminUnlocked) return; // admin edits locally until they hit Save
     const fresh = snap.val();
     if(fresh && fresh.updatedAt !== (DATA && DATA.updatedAt)){
-      DATA = fresh;
+      DATA = normalizeData(fresh);
       render();
     }
   });
